@@ -19,6 +19,7 @@ dotenv.config();
 
 //   //ROUTES
 // app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
 const authRoutes = require('../routes/auth');

@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+//Register endpoint
 const register = async (req, res) => {
   const { username, email, password, role } = req.body;
   try {
@@ -13,6 +14,7 @@ const register = async (req, res) => {
   }
 };
 
+//Login endpoint
 const login = async (req, res) => {
   const { email, password } = req.body;
   try {
