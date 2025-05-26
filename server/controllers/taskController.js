@@ -81,6 +81,37 @@ const deleteTaskHandler = async (req, res) => {
       res.status(500).json({ error: err.message });
     }
 }
+
+//Fetch Board
+const getBoardById = async (req, res) => {
+  const boardId = req.params.id;
+
+  try {
+    const board = await Board.findByPk(boardId, {
+      include: [
+        {
+          model: TaskColumn,
+          as: 'TaskColumns',
+          include: [
+            {
+              model: Task,
+              as: 'Tasks',
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!board) {
+      return res.status(404).json({ error: 'Board not found' });
+    }
+
+    res.json(board);
+  } catch (error) {
+    console.error('Error fetching board:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
   
 module.exports = {
     createBoardHandler,
@@ -89,4 +120,5 @@ module.exports = {
     moveTaskHandler,
     editTaskHandler,
     deleteTaskHandler,
+    getBoardById,
 }

@@ -1,21 +1,20 @@
 // src/features/auth/authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import axiosWithToken from '../../api/axiosWithToken';
 
-const API_URL = 'http://localhost:5005/api/auth';
+const API_URL = '/auth';
 
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (userData, thunkAPI) => {
     try {
-      const res = await axios.post(`${API_URL}/register`, userData, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const api = axiosWithToken();
+      const res = await api.post(`${API_URL}/register`, userData);
       return res.data.user;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data?.details || error.response?.data?.error || error.message || 'Registration failed');
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.details || error.response?.data?.error || error.message || 'Registration failed'
+      );
     }
   }
 );
@@ -24,17 +23,12 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (userData, thunkAPI) => {
     try {
-      const res = await axios.post(`${API_URL}/login`, userData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const api = axiosWithToken();
+      const res = await api.post(`${API_URL}/login`, userData);
       localStorage.setItem('token', res.data.token);
       return res.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message);
+      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
